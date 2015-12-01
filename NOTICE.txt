@@ -1,0 +1,4 @@
+PyVM
+Copyright (C) 2015 by Intigua, Inc.
+This product includes software developed at
+Intigua, Inc. (http://www.intigua.com/).
