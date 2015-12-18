@@ -1,0 +1,93 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="objects.cpp">
+      <Filter>obj</Filter>
+    </ClCompile>
+    <ClCompile Include="instruction.cpp">
+      <Filter>vm</Filter>
+    </ClCompile>
+    <ClCompile Include="PyVM.cpp">
+      <Filter>vm</Filter>
+    </ClCompile>
+    <ClCompile Include="utils.cpp">
+      <Filter>base</Filter>
+    </ClCompile>
+    <ClCompile Include="BufferAccess.cpp">
+      <Filter>vm</Filter>
+    </ClCompile>
+    <ClCompile Include="PyCompile.cpp">
+      <Filter>compile</Filter>
+    </ClCompile>
+    <ClCompile Include="CodeDefinition.cpp">
+      <Filter>compile</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="defs.h">
+      <Filter>base</Filter>
+    </ClInclude>
+    <ClInclude Include="except.h">
+      <Filter>base</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjPool.h">
+      <Filter>base</Filter>
+    </ClInclude>
+    <ClInclude Include="objects.h">
+      <Filter>obj</Filter>
+    </ClInclude>
+    <ClInclude Include="baseObject.h">
+      <Filter>obj</Filter>
+    </ClInclude>
+    <ClInclude Include="cfunc.h">
+      <Filter>obj</Filter>
+    </ClInclude>
+    <ClInclude Include="opcodes.h">
+      <Filter>vm</Filter>
+    </ClInclude>
+    <ClInclude Include="opcodes_def.h">
+      <Filter>vm</Filter>
+    </ClInclude>
+    <ClInclude Include="OpImp.h">
+      <Filter>vm</Filter>
+    </ClInclude>
+    <ClInclude Include="PyVM.h">
+      <Filter>vm</Filter>
+    </ClInclude>
+    <ClInclude Include="gen_string_method_names.h">
+      <Filter>obj</Filter>
+    </ClInclude>
+    <ClInclude Include="log.h">
+      <Filter>base</Filter>
+    </ClInclude>
+    <ClInclude Include="utils.h">
+      <Filter>base</Filter>
+    </ClInclude>
+    <ClInclude Include="BufferAccess.h">
+      <Filter>vm</Filter>
+    </ClInclude>
+    <ClInclude Include="PyCompile.h">
+      <Filter>compile</Filter>
+    </ClInclude>
+    <ClInclude Include="CodeDefinition.h">
+      <Filter>compile</Filter>
+    </ClInclude>
+    <ClInclude Include="VarArray.h">
+      <Filter>vm</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="base">
+      <UniqueIdentifier>{9086f81a-3e2b-42f2-a8bd-8e847c18c590}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="obj">
+      <UniqueIdentifier>{da64b65a-f530-418f-bf50-a009f76cfb45}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vm">
+      <UniqueIdentifier>{d58c9ffe-1ded-4558-9240-ea4f5b6f2193}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="compile">
+      <UniqueIdentifier>{9c7e3ee2-d77b-461f-9493-12b412aef422}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

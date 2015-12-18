@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PyVM", "PyVM.vcxproj", "{36027395-A85C-4DCE-A859-C23D1E3B9F87}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tester", "test\tester.vcxproj", "{F894A474-8167-46FF-86A3-ED249C8CAE82}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libPyVM", "src\libPyVM.vcxproj", "{36027395-A85C-4DCE-A859-C23D1E3B9F87}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,6 +15,14 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F894A474-8167-46FF-86A3-ED249C8CAE82}.Debug|x64.ActiveCfg = Debug|x64
+		{F894A474-8167-46FF-86A3-ED249C8CAE82}.Debug|x64.Build.0 = Debug|x64
+		{F894A474-8167-46FF-86A3-ED249C8CAE82}.Debug|x86.ActiveCfg = Debug|Win32
+		{F894A474-8167-46FF-86A3-ED249C8CAE82}.Debug|x86.Build.0 = Debug|Win32
+		{F894A474-8167-46FF-86A3-ED249C8CAE82}.Release|x64.ActiveCfg = Release|x64
+		{F894A474-8167-46FF-86A3-ED249C8CAE82}.Release|x64.Build.0 = Release|x64
+		{F894A474-8167-46FF-86A3-ED249C8CAE82}.Release|x86.ActiveCfg = Release|Win32
+		{F894A474-8167-46FF-86A3-ED249C8CAE82}.Release|x86.Build.0 = Release|Win32
 		{36027395-A85C-4DCE-A859-C23D1E3B9F87}.Debug|x64.ActiveCfg = Debug|x64
 		{36027395-A85C-4DCE-A859-C23D1E3B9F87}.Debug|x64.Build.0 = Debug|x64
 		{36027395-A85C-4DCE-A859-C23D1E3B9F87}.Debug|x86.ActiveCfg = Debug|Win32

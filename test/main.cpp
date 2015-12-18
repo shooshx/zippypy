@@ -8,24 +8,26 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-#include "src/PyVM.h"
-#include "src/objects.h"
-#include "src/PyCompile.h"
+#include "../src/PyVM.h"
+#include "../src/objects.h"
+#include "../src/PyCompile.h"
 
-#include "test/myTest.h"
-
-// main for interactive interpreter
-int imain()
-{
-    PyVM vm;
-    vm.runInteractive();
-    return 0;
-}
+#include "myTest.h"
 
 // main for running tests
 int main()
 {
     runAllTests();
+    return 0;
+}
+
+
+#if USE_CPYTHON
+// main for interactive interpreter
+int imain()
+{
+    PyVM vm;
+    vm.runInteractive();
     return 0;
 }
 
@@ -48,4 +50,9 @@ print pyfunc(1, 2)
 
     return 0;
 }
+
+
+#endif
+
+
 

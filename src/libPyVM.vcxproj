@@ -19,88 +19,62 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="src\BufferAccess.cpp" />
-    <ClCompile Include="src\CodeDefinition.cpp" />
-    <ClCompile Include="src\PyCompile.cpp" />
-    <ClCompile Include="src\instruction.cpp" />
-    <ClCompile Include="src\objects.cpp" />
-    <ClCompile Include="src\PyVM.cpp" />
-    <ClCompile Include="src\utils.cpp" />
-    <ClInclude Include="src\VarArray.h" />
-    <ClCompile Include="test\PyVMTest.cpp" />
-    <ClCompile Include="test\VarArrayTest.cpp" />
+    <ClCompile Include="BufferAccess.cpp" />
+    <ClCompile Include="CodeDefinition.cpp" />
+    <ClCompile Include="PyCompile.cpp" />
+    <ClCompile Include="instruction.cpp" />
+    <ClCompile Include="objects.cpp" />
+    <ClCompile Include="PyVM.cpp" />
+    <ClCompile Include="utils.cpp" />
+    <ClInclude Include="VarArray.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\baseObject.h" />
-    <ClInclude Include="src\BufferAccess.h" />
-    <ClInclude Include="src\cfunc.h" />
-    <ClInclude Include="src\CodeDefinition.h" />
-    <ClInclude Include="src\PyCompile.h" />
-    <ClInclude Include="src\defs.h" />
-    <ClInclude Include="src\except.h" />
-    <ClInclude Include="src\gen_string_method_names.h" />
-    <ClInclude Include="src\log.h" />
-    <ClInclude Include="src\objects.h" />
-    <ClInclude Include="src\ObjPool.h" />
-    <ClInclude Include="src\opcodes.h" />
-    <ClInclude Include="src\opcodes_def.h" />
-    <ClInclude Include="src\OpImp.h" />
-    <ClInclude Include="src\PyVM.h" />
-    <ClInclude Include="src\utils.h" />
-    <ClInclude Include="test\myTest.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="test\imped_module.py">
-      <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">cd %(RootDir)%(Directory)
-python -c "import %(Filename)"</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">making pyc for %(Filename)</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(RootDir)%(Directory)%(Filename).pyc</Outputs>
-    </None>
-    <CustomBuild Include="test\test_module.py">
-      <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">cd %(RootDir)%(Directory)
-python -c "import %(Filename)"</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">making pyc for %(Filename)</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(RootDir)%(Directory)%(Filename).pyc</Outputs>
-    </CustomBuild>
-    <CustomBuild Include="test\imped_module2.py">
-      <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">cd %(RootDir)%(Directory)
-python -c "import %(Filename)"</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">making pyc for %(Filename)</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(RootDir)%(Directory)%(Filename).pyc</Outputs>
-    </CustomBuild>
+    <ClInclude Include="baseObject.h" />
+    <ClInclude Include="BufferAccess.h" />
+    <ClInclude Include="cfunc.h" />
+    <ClInclude Include="CodeDefinition.h" />
+    <ClInclude Include="PyCompile.h" />
+    <ClInclude Include="defs.h" />
+    <ClInclude Include="except.h" />
+    <ClInclude Include="gen_string_method_names.h" />
+    <ClInclude Include="log.h" />
+    <ClInclude Include="objects.h" />
+    <ClInclude Include="ObjPool.h" />
+    <ClInclude Include="opcodes.h" />
+    <ClInclude Include="opcodes_def.h" />
+    <ClInclude Include="OpImp.h" />
+    <ClInclude Include="PyVM.h" />
+    <ClInclude Include="utils.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{36027395-A85C-4DCE-A859-C23D1E3B9F87}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>PyVM</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <ProjectName>libPyVM</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -113,43 +87,47 @@ python -c "import %(Filename)"</Command>
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="pythonRoot.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="pythonRoot.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="pythonRoot.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="pythonRoot.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)bin\$(Configuration)_$(Platform)\</OutDir>
-    <IntDir>$(SolutionDir)obj\$(Configuration)_$(Platform)\</IntDir>
+    <OutDir>$(SolutionDir)bin\$(Configuration)_$(Platform)\$(ProjectName)\</OutDir>
+    <IntDir>$(SolutionDir)obj\$(Configuration)_$(Platform)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)bin\$(Configuration)_$(Platform)\</OutDir>
-    <IntDir>$(SolutionDir)obj\$(Configuration)_$(Platform)\</IntDir>
+    <OutDir>$(SolutionDir)bin\$(Configuration)_$(Platform)\$(ProjectName)\</OutDir>
+    <IntDir>$(SolutionDir)obj\$(Configuration)_$(Platform)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)bin\$(Configuration)_$(Platform)\</OutDir>
-    <IntDir>$(SolutionDir)obj\$(Configuration)_$(Platform)\</IntDir>
+    <OutDir>$(SolutionDir)bin\$(Configuration)_$(Platform)\$(ProjectName)\</OutDir>
+    <IntDir>$(SolutionDir)obj\$(Configuration)_$(Platform)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)bin\$(Configuration)_$(Platform)\</OutDir>
-    <IntDir>$(SolutionDir)obj\$(Configuration)_$(Platform)\</IntDir>
+    <OutDir>$(SolutionDir)bin\$(Configuration)_$(Platform)\$(ProjectName)\</OutDir>
+    <IntDir>$(SolutionDir)obj\$(Configuration)_$(Platform)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\lib\Python27\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(PYTHONROOT)\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -161,12 +139,11 @@ python -c "import %(Filename)"</Command>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\lib\Python27\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(PYTHONROOT)\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\lib\Python27\libs</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -176,7 +153,7 @@ python -c "import %(Filename)"</Command>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\lib\Python27\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(PYTHONROOT)\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -192,7 +169,7 @@ python -c "import %(Filename)"</Command>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\lib\Python27\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(PYTHONROOT)\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

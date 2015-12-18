@@ -10,7 +10,9 @@
 // limitations under the License.
 #include <string>
 
+#if USE_CPYTHON
 
 bool compileTextToPycBuf(const std::string& text, const std::string& filename, std::string* outpyc);
 std::string getInteractiveLine();
 
+#endif

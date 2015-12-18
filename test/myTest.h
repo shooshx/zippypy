@@ -56,9 +56,19 @@ public:
     }
 
     void runAll() {
-        (*m_setup)();
-        m_failed = 0;
-        m_passed = 0;
+        m_failedCount = 0;
+        m_passedCount = 0;
+        try {
+            (*m_setup)();
+        }
+        catch (const TestAssert& e) {
+            consoleSetColor(CONSOLE_RED);
+            cout << "** FAILED SETUP";
+            consoleSetColor(CONSOLE_GRAY);
+            cout << ":" << e.what() << endl;
+            ++m_failedCount;
+            return;
+        }
         for(auto* c: m_cases) {
             try {
                 c->run();
@@ -68,7 +78,7 @@ public:
                 cout << "** FAILED: ";
                 consoleSetColor(CONSOLE_GRAY);
                 cout << c->name() << ":" << e.what() << endl;  
-                ++m_failed;
+                ++m_failedCount;
                 continue;
             }
             if (c->m_failed) {
@@ -76,23 +86,33 @@ public:
                 cout << "** FAILED: ";
                 consoleSetColor(CONSOLE_GRAY);
                 cout << c->name() << ":" << c->m_failstr << endl;
-                ++m_failed;
+                ++m_failedCount;
             }
             else {
                 consoleSetColor(CONSOLE_GREEN);
                 cout << "** PASSED: ";
                 consoleSetColor(CONSOLE_GRAY);
                 cout << c->name() << endl;
-                ++m_passed;
+                ++m_passedCount;
             }
         }
-        (*m_teardown)();
+        try {
+            (*m_teardown)();
+        }
+        catch (const TestAssert& e) {
+            consoleSetColor(CONSOLE_RED);
+            cout << "** FAILED TEARDOWN";
+            consoleSetColor(CONSOLE_GRAY);
+            cout << ":" << e.what() << endl;
+            ++m_failedCount;
+            return;
+        }
     }
 
     TSetupFunc m_setup;
     TSetupFunc m_teardown;
     vector<Case*> m_cases;
-    int m_failed = 0, m_passed = 0;
+    int m_failedCount = 0, m_passedCount = 0;
 
     static void SetUp() {}
     static void TearDown() {}
@@ -134,8 +154,8 @@ inline void runAllTests()
     int failed = 0, passed = 0;
     for(auto* t: Test::s_allTests) {
         t->runAll();
-        failed += t->m_failed;
-        passed += t->m_passed;
+        failed += t->m_failedCount;
+        passed += t->m_passedCount;
     }
     consoleSetColor((failed > 0) ? CONSOLE_RED : CONSOLE_GREEN);
 

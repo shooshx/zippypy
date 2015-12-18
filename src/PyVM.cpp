@@ -408,6 +408,7 @@ void PyVM::addBuiltin(const ClassObjRef& v) {
     addBuiltin(v->funcname(), ObjRef(v) );
 }
 
+#if USE_CPYTHON
 
 void PyVM::runInteractive() 
 {
@@ -420,3 +421,5 @@ void PyVM::runInteractive()
         eval(dynamic_pcast<CodeObject>(c), mainModule());
     }
 }
+
+#endif

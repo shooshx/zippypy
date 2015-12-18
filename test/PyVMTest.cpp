@@ -81,10 +81,11 @@ public:
         vm.reset(new PyVM);
         vm->setStdout(&std::cout);
 
-        s_path = "test/";
+        s_path = "./";
         
         vm->importPycFile(s_path + "imped_module.pyc");
         mod = vm->importPycFile(s_path + "test_module.pyc");
+        ASSERT_FALSE(mod.isNull());
 
        // s_interp.init();
     }
@@ -604,7 +605,7 @@ TEST_F(PyVMTest, string_slice) {
 
 TEST_F(PyVMTest, import_callback) {
     vm->setImportCallback([](const string& name) {
-        auto p = unique_ptr<istream>(new ifstream("test/" + name + ".pyc", ios::binary));
+        auto p = unique_ptr<istream>(new ifstream("./" + name + ".pyc", ios::binary));
         CHECK(p->good(), "Failed opening module " << name);
         return make_pair(std::move(p), true);        
     });

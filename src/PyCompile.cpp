@@ -11,7 +11,9 @@
 #include "PyCompile.h"
 #include "log.h"
 
-#define HAVE_ROUND // newer VS has this
+#if USE_CPYTHON
+
+#define HAVE_ROUND // newer VS has this, uncomment in older VS
 #undef _DEBUG // don't get the debug lib
 #include <Python.h>
 #include <marshal.h>
@@ -81,3 +83,4 @@ std::string getInteractiveLine()
     return pycline;
 }
 
+#endif // HAS_CPYTHON

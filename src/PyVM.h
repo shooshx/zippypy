@@ -283,7 +283,9 @@ public:
         return m_currentFrame;
     }
 
+#if USE_CPYTHON
     void runInteractive();
+#endif
 
 private:
     DISALLOW_COPY_AND_ASSIGN(PyVM);
