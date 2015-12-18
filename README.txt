@@ -21,6 +21,8 @@ Building
   From Visual Studio this can be reached from -
     VIEW -> Property Manager -> project libPyVM -> "Debug|Win32" -> double click "pythonRoot" -> User Macros
   (This changes the root for all configs, not just Debug|Win32)
+  
+  Note that if your python27.lib is compiled for 32 bit, only the "Win32" configurations are going to successfully link and if it is compiled for 64 bit, only the "x64" configurations will build. It depends on which version of python you downloaded.
 
 - To build without CPython change in src/pythonRoot.props the variable USE_CPYTHON to 0
   From Visual Studio -
