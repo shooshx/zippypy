@@ -29,17 +29,25 @@ inline bool isStrType(Object::Type t) {
     return t == Object::STR || t == Object::USTR;
 }
 
+#define CHECK_TYPE(r, T) CHECK(r->type == Object::typeValue<T>(), "wrong type cast expected " << Object::typeName<T>() << ", got " << r->typeName())
+
 // these should be preferred over costy dynamic_cast
 template<typename T> // an Object type
 PoolPtr<T> checked_cast(ObjRef& r) {
-    CHECK(r->type == Object::typeValue<T>(), "wrong type cast expected " << Object::typeName<T>() << ", got " << r->typeName());
+    CHECK_TYPE(r, T);
     return static_pcast<T>(r);
 }
 template<typename T> // an Object type
 const PoolPtr<T> checked_cast(const ObjRef& r) {
-    CHECK(r->type == Object::typeValue<T>(), "wrong type cast expected " << Object::typeName<T>() << ", got " << r->typeName());
+    CHECK_TYPE(r, T);
     return static_pcast<T>(r);
 }
+template<typename T> // an Object type
+const T* checked_cast(Object* r) {
+    CHECK_TYPE(r, T);
+    return static_cast<T*>(r);
+}
+
 
 template<typename T>
 PoolPtr<T> checked_dynamic_pcast(const ObjRef& o) {
@@ -1231,11 +1239,33 @@ public:
     }
 private:
     NameDict m_locals;
-    Frame m_f;
+    Frame m_f; // execution frame of the co-routine
     bool m_atStart; // true if 'next' was not called yet
 };
 
+class XRange : public Object, public IIterator, public IIterable {
+public:
+    XRange(int begin, int end, int step, PyVM* vm) 
+        : Object(XRANGE), m_begin(begin), m_end(end), m_step(step), m_next(begin), m_vm(vm)
+    {}
+    virtual ObjRef iter(PyVM* _vm) {
+        return ObjRef(this);
+    }
+    virtual bool next(ObjRef& obj) {
+        if (m_step > 0 && m_next >= m_end)
+            return false;
+        if (m_step < 0 && m_next <= m_end)
+            return false;
+        obj = m_vm->makeFromT(m_next);
+        m_next = m_next + m_step;
+        return true;
+    }
 
+private:
+    int m_begin, m_end, m_step;
+    int m_next;
+    PyVM* m_vm;
+};
 
 // ----- stuff from PyVM that needs the objects to be defined ---
 

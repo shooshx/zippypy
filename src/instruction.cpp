@@ -378,7 +378,7 @@ ObjRef OpImp::minusType(Object *arg) {
 }
 template<typename OT>
 static int64 lenType(Object* arg) {
-    return ((OT*)arg)->v.size();
+    return checked_cast<OT>(arg)->v.size();
 }
 
 
@@ -522,12 +522,12 @@ static int64 intLen(const ObjRef& argref) {
     Object *arg = argref.get();
     int64 l = 0;
     switch (arg->type) {
-    case Object::LIST:
-    case Object::TUPLE: return lenType<ListObject>(arg);
+    case Object::LIST:  return lenType<ListObject>(arg);
+    case Object::TUPLE: return lenType<TupleObject>(arg);
     case Object::DICT:  return lenType<DictObject>(arg);
-    case Object::STRDICT:  return lenType<DictObject>(arg);
+    case Object::STRDICT:  return lenType<StrDictObject>(arg);
     case Object::STR:   return lenType<StrObject>(arg);
-    case Object::USTR:  return lenType<StrObject>(arg);
+    case Object::USTR:  return lenType<UnicodeObject>(arg);
     default:
     THROW("not len for type " << arg->typeName());
     }
@@ -1171,6 +1171,27 @@ ObjRef strdict(CallArgs& args, PyVM* vm) {
     return vm->alloc(new StrDictObject(args.kw));
 }
 
+ObjRef xrange(CallArgs& args, PyVM* vm) {
+    int start = 0, end = 0, step = 1;
+    CHECK(args.kw.size() == 0, "xrange() can't get keyworkd arguments");
+    int sz = args.pos.size();
+    int i = 0;
+    if (sz == 2 || sz == 3) {
+        start = extract<int>(args.pos[0]);
+        ++i;
+        if (sz == 3) {
+            step = extract<int>(args.pos[2]);
+            CHECK(step != 0, "xrange() step should not be 0");
+        }
+    }
+    else {
+        CHECK(args.pos.size() == 1, "xrange() takes 1-3 int arguments");
+    }
+    end = extract<int>(args.pos[i]);
+    return vm->alloc(new XRange(start, end, step, vm));
+}
+
+
 //basic logging object, contained in builtin globals, should be one instance per PyVm
 class PyLogger
 {
@@ -1303,6 +1324,7 @@ Builtins::Builtins(PyVM* vm)
     def("round", round);
     def("strdict", strdict);
     def("staticmethod", staticmethod);
+    def("xrange", xrange);
 
     def("hasattr", hasattr);
     def("getattr", getattr);

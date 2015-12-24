@@ -233,6 +233,7 @@ TEST_F(PyVMTest, builtin_types_and_funcs)
     EXPECT_NO_THROW_PYS( vm->call("test_module.testStrDictInOp") );
     EXPECT_NO_THROW_PYS( vm->call("test_module.testStrDictSubScript") );
     EXPECT_NO_THROW_PYS( vm->call("test_module.testStrDictValuesFunc"));
+    EXPECT_NO_THROW_PYS( vm->call("test_module.testStrDictSize"));
     EXPECT_NO_THROW_PYS( vm->call("test_module.testStrip"));
     
     EXPECT_NO_THROW_PYS( vm->call("test_module.testEq") );
@@ -248,6 +249,7 @@ TEST_F(PyVMTest, builtin_types_and_funcs)
     EXPECT_NO_THROW_PYS( vm->call("test_module.testGlobalInClass"));
 
     EXPECT_NO_THROW_PYS( vm->call("test_module.testDictCollision"));
+    EXPECT_NO_THROW_PYS( vm->call("test_module.testXrange"));
 }
 
 

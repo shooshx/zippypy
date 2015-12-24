@@ -71,7 +71,8 @@ public:
         CCTOR_WRAP = 19,
         GENERATOR = 20,
         CFUNC_WRAP = 21,
-        SLICE = 22
+        SLICE = 22,
+        XRANGE = 23
     };
     enum TypeProp {
         IATTRABLE = 1, // see tryAs<IAttrable>

@@ -762,6 +762,14 @@ def testStrDictInOp():
     
     FALSE(1 in ab)
     FALSE('a' in strdict())
+
+def testStrDictSize():
+    d = strdict()
+    EQ(len(d), 0)
+    for i in xrange(1,100):
+        d[str(i)] = 1
+        EQ(len(d), i)
+
     
 def testStrDictSubScript():
     x = strdict()
@@ -1315,3 +1323,29 @@ def testDictCollision():
     d[h] = 2
     EQ(d['a'], 1)
     EQ(d[h], 2)
+
+def mkList(r):
+    l = []
+    for a in r:
+        l.append(a)
+    return l
+
+def testXrange():
+    EQ( mkList(xrange(0,10)), [0,1,2,3,4,5,6,7,8,9])
+    EQ( mkList(xrange(0,0)), [])
+    EQ( mkList(xrange(0,1)), [0])
+    EQ( mkList(xrange(0,-2)), [])
+
+    EQ( mkList(xrange(5)), [0,1,2,3,4])
+    EQ( mkList(xrange(0)), [])
+    EQ( mkList(xrange(-4)), [])
+
+    EQ( mkList(xrange(0,4,2)), [0,2])
+    EQ( mkList(xrange(0,5,2)), [0,2,4])
+    EQ( mkList(xrange(1,5,2)), [1,3])
+    EQ( mkList(xrange(1,6,2)), [1,3,5])
+    EQ( mkList(xrange(1,6,10)), [1])
+    EQ( mkList(xrange(1,12,10)), [1,11])
+    EQ( mkList(xrange(1,12,-1)), [])
+    EQ( mkList(xrange(1,-6,-1)), [1,0,-1,-2,-3,-4,-5])
+    EQ( mkList(xrange(1,-6,-2)), [1,-1,-3,-5])
