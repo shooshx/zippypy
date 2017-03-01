@@ -1,4 +1,4 @@
-libPyVM is a compact Python 2.7 interpreter that can be used in various places where the standard CPython interpreter is not appropriate or cumbersome to use.
+ZippyPy is a compact Python 2.7 interpreter that can be used in various places where the standard CPython interpreter is not appropriate or cumbersome to use.
 
 - The entire interpreter is fully instantiatable. This means you can have multiple interpreters running in a single process. There is no global state or variables.
 - Very light weight. The entire interpreter is about 6000 lines of code, excluding tests and generated code.
