@@ -81,7 +81,8 @@ public:
 
     RefCount<Object> count;
     Type type;
-    int typeProp; // used instead of costy dynamic_cast
+    int typeProp; // flags of TypeProp, used instead of costy dynamic_cast
+                  // TBD3: merge to type?
 
 public:
     virtual ~Object() {

@@ -21,18 +21,32 @@ public:
 
     void parseCode(Deserialize& s, PyVM* vm);
 public:
-    string co_name;
+    // read values
     uint co_argcount;
-    uint co_nlocals;
-    vector<string> co_varnames;
-    vector<string> co_cellvars;
-    vector<string> co_freevars;
+    uint co_posonlyargcount;
+    uint co_kwonlyargcount;
+    uint co_stacksize;
+    uint co_flags;
     string co_code;
     vector<ObjRef> co_consts;
     vector<string> co_names;
+    vector<string> co_localsplusnames;
+    // co_localspluskinds
     string co_filename;
+    string co_name;
+    string co_qualname;
     uint co_firstlineno;
-    string co_lnotab;
-    uint co_stacksize;
-    uint co_flags;
+    // co_linetable
+    // co_expeptiontable
+
+    // derived values
+    uint co_nlocalplus;
+    uint co_nlocals;
+    uint co_ncellvars;
+    uint co_nfreevars;
+
+    //vector<string> co_varnames;
+    //vector<string> co_cellvars;
+    //vector<string> co_freevars;
+    //string co_lnotab;
 };

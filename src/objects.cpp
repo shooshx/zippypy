@@ -100,7 +100,7 @@ void Builtins::add(const string& name, const ObjRef& v) {
 
 // see "All about co_lnotab" http://svn.python.org/projects/python/branches/pep-0384/Objects/lnotab_notes.txt
 int CodeObject::lineFromIndex(int qi) const {
-    const string& tab = m_co.co_lnotab;
+  /*  const string& tab = m_co.co_lnotab;
     if ((tab.size() % 2) != 0)
         return -1; //strange format
     int lineno = m_co.co_firstlineno, addr = 0;
@@ -110,7 +110,8 @@ int CodeObject::lineFromIndex(int qi) const {
             return lineno;
         lineno += tab[i + 1];
     }
-    return lineno;
+    return lineno;*/
+    return 0; // TBD3
 }
 
 

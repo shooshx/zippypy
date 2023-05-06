@@ -32,7 +32,7 @@ def testMap():
     EQ(len(x), 2)
     x["a"] = 44
     x["b"] = 45
-    print x["b"], x[43]
+    print(x["b"], x[43])
     y = {1: 42, 5:"b", 6:"asf", 47:"c"}
 
     EQ(x[u'b'], 45) # conversion in comparison
@@ -89,7 +89,7 @@ def testStrMapItter(map):
 
 
 
-print 'toplvl'
+print('toplvl')
 
 def EQ(a, b):
     if a != b:
@@ -201,7 +201,7 @@ def testFor():
     a = [2,4,'bb',8]
     s = ''
     for x in a:
-        print x
+        print(x)
         s += str(x)
     EQ(s, "24bb8")   
         
@@ -312,14 +312,16 @@ def testIntFloatBasicOperations():
 def testIs():
     a = None
     TRUE(a is None)
-    FALSE(a is 1)
-    TRUE(a is not 1)
-    FALSE(a is 'a')
-    TRUE(a is not 'a')
-    b = 2
+    one = 1
+    FALSE(a is one)
+    TRUE(a is not one)
+    astr = 'a'
+    FALSE(a is astr)
+    TRUE(a is not astr)
+    b = 1
     FALSE(b is None)
     TRUE(b is not None)
-    FALSE(b is 3-1) # different from CPython, for int < 256
+    FALSE(b is one) # different from CPython, for int < 256
     b += 1
     a = 'bla'
     FALSE(a is b)
@@ -388,13 +390,13 @@ def testSplit():
     EQ(" hello  world \tbla  \n".split(), ["hello", "world", "bla"])
     EQ("\n a b c".split(), ["a", "b", "c"])
     
-    print "OK"
+    print("OK")
     
 def testUnicode():
     x = u'hello'
     TRUE(x.beginsWith(u'he'))
     TRUE(x == u'hello')
-    print x
+    print(x)
     EQ(x + u'bla', u'hellobla')
     EQ(x * 2, u'hellohello')
     EQ(len(u'bla'), 3)
@@ -404,7 +406,7 @@ def testUnicode():
     
     TRUE(x.beginsWith('he'))
     a = u'he\u0583llo'
-    print a
+    print(a)
     TRUE(a.contains(u'e\u0583l'))
     FALSE(a.endswith(u'?llo'))
     TRUE(a.endswith('llo'))
@@ -422,7 +424,7 @@ def testUnicode():
     a = u'aaa'
     EQ(a + 'bbb', u'aaabbb')
     EQ(a + u'bbb', u'aaabbb')    
-    print "OK"
+    print("OK")
       
     
 def testJoin():
@@ -441,7 +443,7 @@ def testJoin():
     EQ(u'AA'.join([]), u'')
     a = u'd'
     TRUE(','.join([a]) is a)
-    print "OK join"
+    print("OK join")
 
 def r(x):
     return x
@@ -489,7 +491,7 @@ def testBitOp():
     EQ(~x, -1)
     x = 0xa1a1a1a1a1a1a1
     EQ(~x, -45495186823946658)
-    print "OK"
+    print("OK")
     
     
 def key_f(x, aa, bb, cc, a, b, c):
@@ -501,7 +503,7 @@ def key_f(x, aa, bb, cc, a, b, c):
 class KeyC():
     def __init__(self):
         self.bla = -1
-        print "in init"
+        print("in init")
     def f(self, x, aa, bb, cc, a, b, c):
         EQ(self.bla, -1)
         EQ(x, 0)
@@ -513,16 +515,16 @@ class KeyC():
     
 def testKeyWordArgs():
     key_f(0, 1, 2, 3, 1, 2, 3)
-    print 1
+    print(1)
     key_f(0, 1, 2, 3, c = 3, a = 1, b = 2)
-    print 2
+    print(2)
     key_f(0, 1, 2, 3, 1, b = 2, c = 3)
-    print 3
+    print(3)
     key_f(0, aa=1, bb=2, cc=3, a=1, b=2, c=3)
     a = 10
     b = 20
     key_f(0, a, b, 30, a=a, b=b, c=30)
-    print 4
+    print(4)
     
     i = KeyC()
     i.f(0, 1, 2, 3, 1, 2, 3)
@@ -531,7 +533,7 @@ def testKeyWordArgs():
     i.f(0, aa=1, bb=2, cc=3, a=1, b=2, c=3)
     i.f(0, a, b, 30, a=a, b=b, c=30)
     
-    print "OK1"
+    print("OK1")
 
     # test args that are given more than once
     #key_f(0, 1, 2, 3, c = 3, aa = 1, b = 2)
@@ -547,7 +549,7 @@ def testCKeyWordArgs():
 
 class InitTest():
     def __init__(self, a, b, c):
-        print "initTest", a, b, c
+        print("initTest", a, b, c)
         self.a = a
         self.b = b
         self.c = c
@@ -573,7 +575,7 @@ class TestBase:
 class TestDerived(TestBase):
     def pol(self):
         self.non = None
-        print "hey", self.non
+        print("hey", self.non)
 
     
 def testClass():
@@ -597,7 +599,7 @@ def testClass():
     x = TestDerived()
     x.bpol()
     x.pol()
-    print x.bla, x.non
+    print(x.bla, x.non)
     EQ(str(x.bla) + str(x.non), "666None")    
 
     # instance equality
@@ -635,7 +637,7 @@ def testListCompr():
     EQ(l, [2,4,6])
     l = [x*2 if x < 5 else x*10 for x in [1,2,3,4,5,6,7,8,9]]
     EQ(l, [2, 4, 6, 8, 50, 60, 70, 80, 90])
-    print "OK lstcmpr"
+    print("OK lstcmpr")
     
 
 def testUnpack():
@@ -669,7 +671,7 @@ def testUnpack():
     EQ(b,2)
     EQ(c,3)
     EQ(d,4)
-    print "OK unpack"
+    print("OK unpack")
     
 
 def strIter():
@@ -681,7 +683,7 @@ def strIter():
     for x in u'abc':
         r.append(x)
     EQ(r, [u'a', u'b', u'c'])    
-    print "OK strIter"
+    print("OK strIter")
     
     s = "abcd"
     EQ(s[0], "a")
@@ -787,7 +789,7 @@ def testStrDictSubScript():
     EQ(y['x'], 'bla')
     
     lk = y.keys()
-    print lk
+    print(lk)
     TRUE('x' in lk)
     TRUE('y' in lk)
         
@@ -814,7 +816,7 @@ def parseCharArray(envp):
         s = sbuf.readCStr()
         
         #vs = vosTranslateFile(s)
-        print s
+        print(s)
         vs = s.lower()
         
         savedRefs.append(vs)
@@ -835,7 +837,7 @@ def testAccessBuf(s):
     #EQ(rbuf.readInt(2), 200)
     EQ(rbuf.readInt(4), 300)
     EQ(rbuf.readInt(8), 400)
-    print "testWriteBuf OK1"
+    print("testWriteBuf OK1")
     
     wbuf = AccessBuffer(s.c_ptr())
     wbuf.writeInt(1, 200)
@@ -880,7 +882,7 @@ def testBuildBuf(a, b, c):
     bbuf.writeInt(1, 111)
     # bbuf.writeInt(2, 777)
 
-    return bbuf.str()
+    return(bbuf.str())
 
 
 def testArgcArgv(argc, argv):
@@ -892,7 +894,7 @@ def testArgcArgv(argc, argv):
         sbuf = AccessBuffer(sp)
         s = sbuf.readCStr()
         us = s.lower()
-        print s, "->", us
+        print(s, "->", us)
         wrbuf.writePtr(us.glob_ptr())
         count = count + 1
         
@@ -911,7 +913,7 @@ def testGetAttr():
     EQ(getattr(Bla, "bla", 2), 2)
     #getattr(Bla, "bla")  throws
     
-    print "testGetAttr OK"
+    print("testGetAttr OK")
     
 def testVarArgFunc(i):
     EQ(i.varArgFunc(), "0 ")
@@ -938,7 +940,7 @@ def testGen():
     
     #x = list(gen());
     s = ' '.join(x)
-    print s
+    print(s)
     EQ(s, "1 2 3 4 5 6 7 8 9 None bla")
     
 def instanceCObject():
@@ -1077,22 +1079,22 @@ def testRound():
 
 
 def withVarPos1(a, b, *args):
-    print "VarPos1 ", a, " ", b, " ", args
+    print("VarPos1 ", a, " ", b, " ", args)
     EQ(a, 1)
     EQ(b, 2)
     EQ(args, ('Bla'))
 
 def withVarPos2(*args):
-    print "VarPos2 ", args
+    print("VarPos2 ", args)
     EQ(args, (1, 2, 'Bla')) 
 
 def withVarPos3(*args):
-    print "VarPos3 ", args
+    print("VarPos3 ", args)
     EQ(args, ())
 
 class WithVarPos:
     def methWithVarPos(self, a, b, *args):
-        print "methVarPos ", a, b, args
+        print("methVarPos ", a, b, args)
         EQ(a, 'a')
         EQ(b, 'b')
         EQ(args, ('c', 'd', 5))
@@ -1108,7 +1110,7 @@ def testVarPos():
 def loadRuntimeModule():
     #m = runtime_import("runtime_mod.py") # buildin function
     m = runtime_import("runtime_mod.json")
-    print m
+    print(m)
     return m
 
 def testIntCast():
@@ -1207,13 +1209,13 @@ class NotC:
 def testUnboundedMethod1():
     x = C()
     r = C.f(x, 2, 3)
-    print r    
+    print(r)
     EQ(r, (11, 2, 3))
 
 def testUnboundedMethod2():
     x = NotC()
     r = C.f(x, 2, 3) # this does not work in CPython but here I allow it.
-    print r
+    print(r)
     EQ(r, (22, 2, 3))
 
 def testClambda():
@@ -1223,7 +1225,7 @@ def testClambda():
 some_global = 1
 class GlobalAccess:
     if some_global == 1:
-        print "some_global", some_global
+        print("some_global", some_global)
         def f1(self):
             return 1;
 

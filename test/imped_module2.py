@@ -10,5 +10,5 @@
 # limitations under the License.
 
 def hello2():
-    print "in imported module2"
+    print("in imported module2")
     return 2

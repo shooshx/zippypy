@@ -17,12 +17,6 @@
 #include "utils.h"
 
 #include <sstream>
-/*#include <boost/foreach.hpp>
-#include <boost/math/special_functions/round.hpp>
-#include <boost/property_tree/ptree.hpp> // for json
-#include <boost/property_tree/json_parser.hpp>
-*/
-
 
 
 // NOTICE: this number should be incremented whenever there are additions to the api supplied by PyVM and related classes
@@ -34,9 +28,9 @@
 
 class Instruction {
 public:
-    Instruction(uchar _opcode) :opcode(_opcode), param(0) {}
+    Instruction(uchar _opcode, uchar _param) :opcode(_opcode), param(_param) {}
     uchar opcode;
-    ushort param;
+    uchar param;
 };
 
 
@@ -685,11 +679,11 @@ int64 hashStr(const string& s) {
 
 int64 binOp(int64 a, int64 b, uchar op) {
     switch (op) {
-    case BINARY_OR:  case INPLACE_OR: return a | b;
-    case BINARY_AND: case INPLACE_AND: return a & b;
-    case BINARY_XOR: case INPLACE_XOR: return a ^ b;
-    case BINARY_RSHIFT: case INPLACE_RSHIFT: return (*(uint64*)&a) >> b; // avoid sign extension
-    case BINARY_LSHIFT: case INPLACE_LSHIFT: return a << b;
+    case NB_OR:  case NB_INPLACE_OR: return a | b;
+    case NB_AND: case NB_INPLACE_AND: return a & b;
+    case NB_XOR: case NB_INPLACE_XOR: return a ^ b;
+    case NB_RSHIFT: case NB_INPLACE_RSHIFT: return (*(uint64*)&a) >> b; // avoid sign extension
+    case NB_LSHIFT: case NB_INPLACE_LSHIFT: return a << b;
     }
     THROW("Unexpected op");
 }
@@ -698,15 +692,23 @@ int64 binOp(int64 a, int64 b, uchar op) {
 void Frame::doOpcode( SetObjCallback& setObj )
 {
     CodeDefinition& c = m_code->m_co;
-    Instruction ins(c.co_code[m_lasti]);
-    if (ins.opcode >= HAVE_ARGUMENT) {
-        CHECK(m_lasti + 2 < c.co_code.size(), "Unexpected m_lasti");
-        ins.param = (c.co_code[m_lasti+1] & 0xFF) | (c.co_code[m_lasti+2] << 8);
-    }
+
+    CHECK(m_lasti + 1 < c.co_code.size(), "Unexpected m_lasti");
+    Instruction ins(c.co_code[m_lasti], c.co_code[m_lasti + 1]);
+    m_lasti += 2;
+
     OpImp op(m_vm);
 
     switch (ins.opcode)
     {
+    case NOP:
+    case CACHE:
+    case RESUME:
+    case PRECALL:
+        break;
+    case PUSH_NULL:
+        push(ObjRef());
+        break;
     case LOAD_FAST:  // can be done with just the index
 		// push(lookup(locals(), c.co_varnames(ins.param)));
         push(m_fastlocals[ins.param]);
@@ -734,47 +736,56 @@ void Frame::doOpcode( SetObjCallback& setObj )
     case COMPARE_OP: {
         ObjRef rhs = pop();
         ObjRef lhs = pop();
-        push(alloc(new BoolObject(op.compare(lhs, rhs, ins.param))));
+        push(alloc(new BoolObject(op.compare(lhs, rhs, ins.param >> 4))));
         break;
     }
-    case POP_JUMP_IF_FALSE:
-        if (asBool(pop()) == false) {
-            m_lasti = ins.param;
-            return;
-        }
+    case POP_JUMP_FORWARD_IF_FALSE:
+        if (asBool(pop()) == false)
+            m_lasti += ins.param;
         break;
-    case POP_JUMP_IF_TRUE: 
-        if (asBool(pop()) == true) {
-            m_lasti = ins.param;
-            return;
-        }
+    case POP_JUMP_BACKWARD_IF_FALSE:
+        if (asBool(pop()) == false)
+            m_lasti -= ins.param;
         break;
+    case POP_JUMP_FORWARD_IF_TRUE:
+        if (asBool(pop()) == true)
+            m_lasti += ins.param;
+        break;
+    case POP_JUMP_BACKWARD_IF_TRUE:
+        if (asBool(pop()) == true)
+            m_lasti -= ins.param;
+        break;
+    case POP_JUMP_FORWARD_IF_NONE:
+        if (pop().isNull())
+            m_lasti += ins.param;
+        break;
+    case POP_JUMP_BACKWARD_IF_NONE:
+        if (pop().isNull())
+            m_lasti -= ins.param;
+        break;
+    case POP_JUMP_FORWARD_IF_NOT_NONE:
+        if (!pop().isNull())
+            m_lasti += ins.param;
+        break;
+    case POP_JUMP_BACKWARD_IF_NOT_NONE:
+        if (!pop().isNull())
+            m_lasti -= ins.param;
+        break;
+
+
     case JUMP_IF_FALSE_OR_POP:
         if (asBool(top()) == false) {
-            m_lasti = ins.param;
+            m_lasti += ins.param;
             return;
         }
         pop();
         break;
     case JUMP_IF_TRUE_OR_POP:
         if (asBool(top()) == true) {
-            m_lasti = ins.param;
+            m_lasti += ins.param;
             return;
         }
         pop();
-        break;
-    case PRINT_ITEM: {
-        ObjRef v = pop();
-        if (m_vm->m_out) {
-            print(v, *m_vm->m_out->m_os, false);
-            (*m_vm->m_out->m_os) << " "; // space after each item in print
-        }
-        break;
-    }
-    case PRINT_NEWLINE:
-        if (m_vm->m_out) {
-            m_vm->m_out->endL();
-        }
         break;
     case PRINT_EXPR: {
         ObjRef v = pop();
@@ -787,32 +798,50 @@ void Frame::doOpcode( SetObjCallback& setObj )
     case JUMP_FORWARD:
         m_lasti += ins.param;
         break;
-    case INPLACE_ADD: 
-    case BINARY_ADD: {
-        ObjRef rhs = pop();
-        ObjRef lhs = pop();
-        push(op.add(lhs, rhs));
+    case JUMP_BACKWARD:
+    case JUMP_BACKWARD_NO_INTERRUPT:
+        m_lasti -= ins.param;
         break;
-    }
-    case INPLACE_MULTIPLY:
-    case BINARY_MULTIPLY: {
+    case BINARY_OP: {
         ObjRef rhs = pop();
         ObjRef lhs = pop();
-        push(op.mult(lhs, rhs));
-        break;
-    }
-    case INPLACE_SUBTRACT:
-    case BINARY_SUBTRACT: {
-        ObjRef rhs = pop();
-        ObjRef lhs = pop();
-        push(op.sub(lhs, rhs));
-        break;
-    }
-    case INPLACE_DIVIDE:
-    case BINARY_DIVIDE: {
-        ObjRef rhs = pop();
-        ObjRef lhs = pop();
-        push(op.div(lhs, rhs));
+        ObjRef res;
+        switch (ins.param)
+        {
+        case NB_ADD:
+        case NB_INPLACE_ADD:
+            res = op.add(lhs, rhs);
+            break;
+        case NB_MULTIPLY:
+        case NB_INPLACE_MULTIPLY:
+            res = op.mult(lhs, rhs);
+            break;
+        case NB_SUBTRACT:
+        case NB_INPLACE_SUBTRACT:
+            res = op.sub(lhs, rhs);
+            break;
+        case NB_FLOOR_DIVIDE:
+        case NB_INPLACE_FLOOR_DIVIDE:
+            res = op.div(lhs, rhs);
+            break;
+        case NB_OR:
+        case NB_AND:
+        case NB_XOR:
+        case NB_RSHIFT:
+        case NB_LSHIFT:
+        case NB_INPLACE_OR:
+        case NB_INPLACE_AND:
+        case NB_INPLACE_XOR:
+        case NB_INPLACE_RSHIFT:
+        case NB_INPLACE_LSHIFT: {
+            int64 ret = binOp(checked_cast<IntObject>(rhs)->v, checked_cast<IntObject>(lhs)->v, ins.opcode);
+            res = m_vm->alloc(new IntObject(ret));
+            break;
+        }
+        default:
+            THROW("unimplemented binary op " << ins.param);
+        }
+        push(res);
         break;
     }
     case UNARY_POSITIVE:
@@ -839,12 +868,9 @@ void Frame::doOpcode( SetObjCallback& setObj )
         push(v);
         break;
     }
-    case CALL_FUNCTION: {
-        int posCount = ins.param & 0xFF;
-        int kwCount = ins.param >> 8;
-        push(m_vm->callFunction(*this, posCount, kwCount));
+    case CALL: 
+        push(m_vm->callFunction(*this, ins.param, 0));
         break;
-    }
     case POP_TOP:
         pop();
         break;
@@ -857,10 +883,10 @@ void Frame::doOpcode( SetObjCallback& setObj )
             push(alloc(new GeneratorObject(code, m_module, m_vm)));             
         break;
     }
-    case LOAD_LOCALS:
+ /*   case LOAD_LOCALS:
         push(alloc(new StrDictObject(*m_locals)));
-        break;
-    case BUILD_CLASS: {
+        break;*/
+ /*   case BUILD_CLASS: {
         StrDictObjRef methods = checked_cast<StrDictObject>(pop());
         TupleObjRef bases = checked_cast<TupleObject>(pop());
         CHECK(bases->size() <= 1, "multiple base classes not supported");
@@ -892,7 +918,7 @@ void Frame::doOpcode( SetObjCallback& setObj )
         }
         push(cls);
         break;
-    }
+    }*/
     case LOAD_ATTR: {
         const string& name = c.co_names[ins.param];
         ObjRef o = pop();
@@ -936,9 +962,9 @@ void Frame::doOpcode( SetObjCallback& setObj )
         push( cont->as<ISubscriptable>()->getSubscr(key, m_vm) );
         break;
     }
-    case SETUP_LOOP:
+ /*   case SETUP_LOOP:
         pushBlock(ins.opcode, m_lasti + 3 + ins.param);
-        break;
+        break;*/
     case GET_ITER: {
         ObjRef a = pop();
         push(a->as<IIterable>()->iter(m_vm));
@@ -955,22 +981,22 @@ void Frame::doOpcode( SetObjCallback& setObj )
         }
         break;
     }
-    case JUMP_ABSOLUTE:
+ /*   case JUMP_ABSOLUTE:
         m_lasti = ins.param;
         return;
     case POP_BLOCK:
         popBlock();
-        break;
+        break; */
     case BUILD_MAP:
         push(alloc(new DictObject(m_vm)));
         break;
-    case STORE_MAP: {
+ /*   case STORE_MAP: {
         ObjRef key = pop();
         ObjRef val = pop();
         DictObjRef m = checked_cast<DictObject>(top());
         m->setSubscr(key, val);
         break;
-    }
+    }*/
     case IMPORT_NAME: {
         ObjRef fromlist = pop();
         ObjRef level = pop();
@@ -991,30 +1017,15 @@ void Frame::doOpcode( SetObjCallback& setObj )
         throw PyRaisedException(a, b, c);
         break;
     }
-    case BINARY_OR:
-    case BINARY_AND:
-    case BINARY_XOR:
-    case BINARY_RSHIFT:
-    case BINARY_LSHIFT:
-    case INPLACE_OR:
-    case INPLACE_AND:
-    case INPLACE_XOR:
-    case INPLACE_RSHIFT:
-    case INPLACE_LSHIFT: {
-        ObjRef b = pop();
-        ObjRef a = pop();
-        int64 ret = binOp(checked_cast<IntObject>(a)->v, checked_cast<IntObject>(b)->v, ins.opcode);
-        push(m_vm->alloc(new IntObject(ret)));
-        break;
-    }
+
     case UNARY_INVERT: // bitwise not, operator ~
         push(m_vm->alloc(new IntObject( ~ checked_cast<IntObject>(pop())->v)));
         break;       
-    case LIST_APPEND: { // for list comprehension
+  /*  case LIST_APPEND: { // for list comprehension
         ListObjRef lst = checked_cast<ListObject>(m_stack.peek(ins.param));
         lst->append(pop());
         break;
-    }
+    }*/
     case UNPACK_SEQUENCE: {
         auto ito = pop()->as<IIterable>()->iter(m_vm); // save the iterator object
         IIterator *it = ito->as<IIterator>();
@@ -1027,15 +1038,15 @@ void Frame::doOpcode( SetObjCallback& setObj )
         CHECK(ins.param == i, "too few values to unpack");
         break;
     }
-    case ROT_TWO:  // used with when unpacking literals a,b=[1,2]
+    /*case ROT_TWO:  // used with when unpacking literals a,b=[1,2]
     case ROT_THREE: 
     case ROT_FOUR: 
         m_stack.pushAt(ins.opcode - 1, pop());
-        break;
+        break;*/
     case YIELD_VALUE:
         setObj(SLOT_YIELD, pop());
         break; // increment m_lasti so the next iteration will start where we left off
-    case SLICE_0:
+  /*  case SLICE_0:
     case SLICE_1:
     case SLICE_2:
     case SLICE_3: {
@@ -1051,7 +1062,7 @@ void Frame::doOpcode( SetObjCallback& setObj )
         auto obj = pop();
         push(op.apply_slice(obj, aptr, bptr));
         break;
-    }
+    }*/
     case BUILD_SLICE: {
         int step = 0, a = 0, b = 0;
         bool has_step = false, has_a = false, has_b = false;
@@ -1066,9 +1077,6 @@ void Frame::doOpcode( SetObjCallback& setObj )
         THROW("Unknown opcode " << ins.opcode);
     }
 
-    ++m_lasti;
-    if (ins.opcode >= HAVE_ARGUMENT)
-        m_lasti += 2;
 
 };
 
@@ -1312,8 +1320,10 @@ Builtins::Builtins(PyVM* vm)
     std::shared_ptr<PyLogger> loggerIns(new PyLogger);
     auto insObj = pyLoggerCls->instanceSharedPtr(loggerIns);
     addGlobal((ObjRef)insObj, "logging");
+    addGlobal(insObj->simple_attr("debug"), "print");
 
     // functions that need to know about the VM, are declared in OpImp.
+
     defIc("len", makeOpImpCWrap(&OpImp::len, m_vm));
     defIc("hash", makeOpImpCWrap(&OpImp::hash, m_vm));
     defIc("str", makeOpImpCWrap(&OpImp::str, m_vm));

@@ -15,7 +15,7 @@
 #include "myTest.h"
 
 // main for running tests
-int main()
+int tmain()
 {
     runAllTests();
     return 0;
@@ -32,16 +32,20 @@ int imain()
 }
 
 // main for running simple sample
-int xmain()
+int main()
 {
     PyVM vm;
-    vm.importPycFile("C:\\projects\\PyVM\\test.pyc");
+    //vm.importPycFile("C:\\projects\\PyVM\\test.pyc");
 
     string comp;
     compileTextToPycBuf(R"**(
-def pyfunc(a, b):
-    return a + b;
-print pyfunc(1, 2)    
+#def pyfunc(a, b):
+#    return a + b;
+#print pyfunc(1, 2)    
+
+a = 1
+print(a)
+
 )**", "test2.py", &comp);
 
     auto module = vm.importPycBuf(comp);

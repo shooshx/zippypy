@@ -12,10 +12,10 @@
 impedGlobs = 42
 
 def hello():
-    print "in imported module", impedGlobs
-    print "hello"
+    print("in imported module", impedGlobs)
+    print("hello")
     
 class HelloCls:
     def helloo(self):
-        print "in imported module class", impedGlobs
-        print "clshello"
+        print("in imported module class", impedGlobs)
+        print("clshello")

@@ -51,6 +51,7 @@ enum EPyOperators {
     OPER_NOT_EQ     = 3,
     OPER_GREATER    = 4,
     OPER_GREATER_EQ = 5,
+
     OPER_IN         = 6,
     OPER_NOT_IN     = 7,
     OPER_IS         = 8,

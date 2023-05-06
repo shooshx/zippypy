@@ -13,11 +13,11 @@
 
 #if USE_CPYTHON
 
-#define HAVE_ROUND // newer VS has this, uncomment in older VS
+//#define HAVE_ROUND // newer VS has this, uncomment in older VS
 #undef _DEBUG // don't get the debug lib
 #include <Python.h>
 #include <marshal.h>
-#include <Python-ast.h>
+//#include <Python-ast.h>
 
 bool initPython() 
 {
@@ -30,6 +30,8 @@ bool initPython()
 
     return false;
 }
+
+typedef intptr_t ssize_t;
 
 // if the GIL needs to be locked, do that before calling this function
 bool compileTextToPycBuf(const std::string& text, const std::string& filename, std::string* outpyc)
@@ -45,7 +47,10 @@ bool compileTextToPycBuf(const std::string& text, const std::string& filename, s
     }
 
     PyObject* pycstr = PyMarshal_WriteObjectToString(pco, 2);
-    *outpyc = std::string(PyString_AsString(pycstr), PyString_Size(pycstr));
+    ssize_t sz = 0;
+    char* data = nullptr;
+    PyBytes_AsStringAndSize(pycstr, &data, &sz);
+    *outpyc = std::string(data, sz);
 
     Py_DECREF(pycstr);
     Py_DECREF(pco);
@@ -63,9 +68,11 @@ std::string getInteractiveLine()
         inited = true;
     }
 
-    int errcode = 0;
+    // use PyRun_InteractiveOneObjectEx
+
+ /*   int errcode = 0;
     PyArena *arena = PyArena_New();
-    mod_ty mod = PyParser_ASTFromFile(stdin, "blafilename", Py_single_input, ">>> ", "... ", nullptr, &errcode, arena);
+    mod_ty mod = PyParser_ASTFromFile(stdin, "blafilename", "utf-8", Py_single_input, ">>> ", "... ", nullptr, &errcode, arena);
     if (mod == nullptr) {
         PyArena_Free(arena);
         return std::string();
@@ -75,12 +82,17 @@ std::string getInteractiveLine()
     PyArena_Free(arena);
 
     PyObject* pycstr = PyMarshal_WriteObjectToString((PyObject*)pco, 2);
-    std::string pycline = std::string(PyString_AsString(pycstr), PyString_Size(pycstr));
+    ssize_t sz = 0;
+    char* data = nullptr;
+    PyBytes_AsStringAndSize(pycstr, &data, &sz);
+    std::string pycline = std::string(data, sz);
 
     Py_DECREF(pycstr);
     Py_DECREF(pco);
 
     return pycline;
+    */
+    return {};
 }
 
 #endif // HAS_CPYTHON

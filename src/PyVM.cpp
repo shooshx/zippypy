@@ -70,7 +70,7 @@ void Frame::localsFromStack(Frame& from, ObjRef self, int posCount, int kwCount)
         testNoneAndSet(dest, c.co_argcount, static_pcast<Object>(starArgs));
     }
     // go over the args in the stack, match to locals
-    for(int i = 0; i < kwCount; ++i) { // arguments passed by key-value
+/*    for(int i = 0; i < kwCount; ++i) { // arguments passed by key-value  TBD3
         ObjRef val = from.pop();
         string aname = checked_cast<StrObject>(from.pop())->v;
         int ci = 0;
@@ -83,7 +83,7 @@ void Frame::localsFromStack(Frame& from, ObjRef self, int posCount, int kwCount)
             }
         }
         CHECK(ci < (int)c.co_argcount, "Unknown key argument name " << aname);
-    }
+    }*/
     for(int i = 0; i < posCount; ++i) { // arguments passed by position
         int posi = selfCount + posCount - i - 1;
         ObjRef a = from.pop();
@@ -233,8 +233,8 @@ string PyVM::instructionPointer() {
 }
 
 // where all functions go to and out of
-ObjRef PyVM::callFunction(Frame& from, int posCount, int kwCount) {
-    ObjRef func = from.m_stack.peek(posCount + kwCount*2);
+ObjRef PyVM::callFunction(Frame& from, int numArg, int kwCount) {
+    ObjRef func = from.m_stack.peek(numArg + kwCount*2);
 
     func->checkProp(Object::ICALLABLE);
     CallableObjRef funcref = static_pcast<CallableObject>(func);
@@ -242,7 +242,7 @@ ObjRef PyVM::callFunction(Frame& from, int posCount, int kwCount) {
     NameDict locals;
     Frame frame(this, funcref->m_module, &locals); // module needed for globals
     try {
-        return funcref->call(from, frame, posCount, kwCount, ObjRef());
+        return funcref->call(from, frame, numArg, kwCount, ObjRef());
     }
     catch(PyException& e) {
         std::ostringstream s;
